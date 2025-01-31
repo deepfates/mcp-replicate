@@ -16,6 +16,8 @@ npm install
 npm run build
 ```
 
+<a href="https://glama.ai/mcp/servers/q60hq1hwtr"><img width="380" height="200" src="https://glama.ai/mcp/servers/q60hq1hwtr/badge" alt="Replicate Server MCP server" /></a>
+
 ## Features
 
 ### Models
