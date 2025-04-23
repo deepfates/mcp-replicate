@@ -116,12 +116,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       });
 
     case "create_and_poll_prediction":
-			return handleCreateAndPollPrediction(client, cache, {
-				version: request.params.arguments?.version as string | undefined,
-				model: request.params.arguments?.model as string | undefined,
-				input: request.params.arguments?.input as ModelIO,
-				webhook: request.params.arguments?.webhook_url as string | undefined,
-			});
+      return handleCreateAndPollPrediction(client, cache, {
+        version: request.params.arguments?.version as string | undefined,
+        model: request.params.arguments?.model as string | undefined,
+        input: request.params.arguments?.input as ModelIO,
+        webhook: request.params.arguments?.webhook_url as string | undefined,
+      });
 
     case "cancel_prediction":
       return handleCancelPrediction(client, cache, {
