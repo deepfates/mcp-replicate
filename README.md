@@ -11,6 +11,7 @@ npm install -g mcp-replicate
 ```
 
 2. Get your Replicate API token:
+
    - Go to [Replicate API tokens page](https://replicate.com/account/api-tokens)
    - Create a new token if you don't have one
    - Copy the token for the next step
@@ -59,17 +60,20 @@ npx mcp-replicate
 ## Features
 
 ### Models
+
 - Search models using semantic search
 - Browse models and collections
 - Get detailed model information and versions
 
 ### Predictions
+
 - Create predictions with text or structured input
 - Track prediction status
 - Cancel running predictions
 - List your recent predictions
 
 ### Image Handling
+
 - View generated images in your browser
 - Manage image cache for better performance
 
@@ -107,19 +111,23 @@ export REPLICATE_API_TOKEN=your_token_here
 ## Available Tools
 
 ### Model Tools
+
 - `search_models`: Find models using semantic search
 - `list_models`: Browse available models
 - `get_model`: Get details about a specific model
 - `list_collections`: Browse model collections
 - `get_collection`: Get details about a specific collection
 
-### Prediction Tools  
+### Prediction Tools
+
 - `create_prediction`: Run a model with your inputs
+- `create_and_poll_prediction`: Run a model with your inputs and wait until it's completed
 - `get_prediction`: Check a prediction's status
 - `cancel_prediction`: Stop a running prediction
 - `list_predictions`: See your recent predictions
 
 ### Image Tools
+
 - `view_image`: Open an image in your browser
 - `clear_image_cache`: Clean up cached images
 - `get_image_cache_stats`: Check cache usage
@@ -142,21 +150,25 @@ export REPLICATE_API_TOKEN=your_token_here
 ## Development
 
 1. Install dependencies:
+
 ```bash
 npm install
 ```
 
 2. Start development server (with auto-reload):
+
 ```bash
 npm run dev
 ```
 
 3. Check code style:
+
 ```bash
 npm run lint
 ```
 
 4. Format code:
+
 ```bash
 npm run format
 ```

@@ -276,6 +276,67 @@ export async function handleCreatePrediction(
 }
 
 /**
+ * Creates a prediction and handles the full lifecycle:
+ * sends the request, polls until completion, and returns the final result URL.
+ */
+export async function handleCreateAndPollPrediction(
+  client: ReplicateClient,
+  cache: Cache,
+  args: {
+    version: string | undefined;
+    model: string | undefined;
+    input: ModelIO | string;
+    webhook?: string;
+  }
+) {
+  try {
+    // If input is a string, wrap it in an object with 'prompt' property
+    const input =
+      typeof args.input === "string" ? { prompt: args.input } : args.input;
+
+    let prediction = await client.createPrediction({
+      ...args,
+      input,
+    });
+
+    // Cache the prediction and its initial status
+    cache.predictionCache.set(prediction.id, prediction);
+    cache.predictionStatus.set(
+      prediction.id,
+      prediction.status as PredictionStatus
+    );
+
+    do {
+      // Wait a second between polls
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      prediction = await client.getPredictionStatus(prediction.id);
+    } while (
+      prediction.status === "starting" ||
+      prediction.status === "processing"
+    );
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Created prediction ${prediction.id}, Output:${prediction.output}`,
+        },
+      ],
+    };
+  } catch (error) {
+    return {
+      isError: true,
+      content: [
+        {
+          type: "text",
+          text: `Error creating prediction: ${getErrorMessage(error)}`,
+        },
+      ],
+    };
+  }
+}
+
+/**
  * Handle the cancel_prediction tool.
  */
 export async function handleCancelPrediction(

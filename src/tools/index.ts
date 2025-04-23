@@ -16,6 +16,7 @@ import {
 } from "./models.js";
 import {
   createPredictionTool,
+  createAndPollPredictionTool,
   cancelPredictionTool,
   getPredictionTool,
   listPredictionsTool,
@@ -35,6 +36,7 @@ export const tools: Tool[] = [
   listCollectionsTool,
   getCollectionTool,
   createPredictionTool,
+  createAndPollPredictionTool,
   cancelPredictionTool,
   getPredictionTool,
   listPredictionsTool,
