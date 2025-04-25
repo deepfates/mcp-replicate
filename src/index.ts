@@ -121,6 +121,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         model: request.params.arguments?.model as string | undefined,
         input: request.params.arguments?.input as ModelIO,
         webhook: request.params.arguments?.webhook_url as string | undefined,
+        pollInterval: request.params.arguments?.poll_interval as
+          | number
+          | undefined,
+        timeout: request.params.arguments?.timeout as number | undefined,
       });
 
     case "cancel_prediction":

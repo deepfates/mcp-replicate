@@ -48,7 +48,7 @@ export const createPredictionTool: Tool = {
 export const createAndPollPredictionTool: Tool = {
   name: "create_and_poll_prediction",
   description:
-    "Create a new prediction and wait until it's completed. Accepts either a model version (for community models) or a model name (for official models), and returns the output URL after successful completion.",
+    "Create a new prediction and wait until it's completed. Accepts either a model version (for community models) or a model name (for official models)",
   inputSchema: {
     type: "object",
     properties: {
@@ -68,6 +68,14 @@ export const createAndPollPredictionTool: Tool = {
       webhook_url: {
         type: "string",
         description: "Optional webhook URL for notifications",
+      },
+      poll_interval: {
+        type: "number",
+        description: "Optional interval between polls (default: 1)",
+      },
+      timeout: {
+        type: "number",
+        description: "Optional timeout for prediction (default: 60)",
       },
     },
     oneOf: [
@@ -133,4 +141,4 @@ export const listPredictionsTool: Tool = {
       },
     },
   },
-}; 
+};

@@ -287,42 +287,20 @@ export async function handleCreateAndPollPrediction(
     model: string | undefined;
     input: ModelIO | string;
     webhook?: string;
+    pollInterval?: number;
+    timeout?: number;
   }
 ) {
-  try {
-    // If input is a string, wrap it in an object with 'prompt' property
-    const input =
-      typeof args.input === "string" ? { prompt: args.input } : args.input;
+  // If input is a string, wrap it in an object with 'prompt' property
+  const input =
+    typeof args.input === "string" ? { prompt: args.input } : args.input;
 
-    let prediction = await client.createPrediction({
+  let prediction;
+  try {
+    prediction = await client.createPrediction({
       ...args,
       input,
     });
-
-    // Cache the prediction and its initial status
-    cache.predictionCache.set(prediction.id, prediction);
-    cache.predictionStatus.set(
-      prediction.id,
-      prediction.status as PredictionStatus
-    );
-
-    do {
-      // Wait a second between polls
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      prediction = await client.getPredictionStatus(prediction.id);
-    } while (
-      prediction.status === "starting" ||
-      prediction.status === "processing"
-    );
-
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Created prediction ${prediction.id}, Output:${prediction.output}`,
-        },
-      ],
-    };
   } catch (error) {
     return {
       isError: true,
@@ -334,6 +312,83 @@ export async function handleCreateAndPollPrediction(
       ],
     };
   }
+
+  // Cache the prediction and its initial status
+  cache.predictionCache.set(prediction.id, prediction);
+  cache.predictionStatus.set(
+    prediction.id,
+    prediction.status as PredictionStatus
+  );
+
+  const shouldContinuePolling = (
+    prediction: Prediction | null,
+    timeoutAt: number
+  ) => {
+    if (!prediction) return true;
+    if (performance.now() > timeoutAt) return false;
+
+    if (
+      prediction.status === "succeeded" ||
+      prediction.status === "failed" ||
+      prediction.status === "canceled"
+    ) {
+      return false;
+    }
+    return true;
+  };
+
+  const { pollInterval = 1, timeout = 60 } = args;
+  const predictionId = prediction.id;
+  let timeoutAt = performance.now() + timeout * 1000;
+
+  do {
+    await new Promise((resolve) => setTimeout(resolve, pollInterval * 1000));
+
+    try {
+      prediction = await client.getPredictionStatus(predictionId);
+    } catch (error) {
+      console.error(error);
+    }
+  } while (shouldContinuePolling(prediction, timeoutAt));
+
+  if (timeoutAt < performance.now()) {
+    console.warn(
+      `Timeout reached while polling prediction by id: ${predictionId}`
+    );
+    return {
+      isError: true,
+      content: [
+        {
+          type: "text",
+          text: `Timeout reached while polling prediction by id: ${predictionId}`,
+        },
+      ],
+    };
+  }
+
+  if (prediction.status === "canceled" || prediction.status === "failed") {
+    console.warn(
+      `Prediction with id: ${predictionId} ${prediction.status} with error ${prediction.error}`
+    );
+    return {
+      isError: true,
+      content: [
+        {
+          type: "text",
+          text: `Prediction with id: ${predictionId} ${prediction.status} with error ${prediction.error}`,
+        },
+      ],
+    };
+  }
+
+  return {
+    content: [
+      {
+        type: "text",
+        text: `Created prediction ${prediction.id}, Output: ${prediction.output}`,
+      },
+    ],
+  };
 }
 
 /**
