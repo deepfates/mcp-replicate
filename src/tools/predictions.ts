@@ -42,6 +42,50 @@ export const createPredictionTool: Tool = {
 };
 
 /**
+ * Tool for creating a new prediction, waiting for it to complete,
+ * and returning the final output URL.
+ */
+export const createAndPollPredictionTool: Tool = {
+  name: "create_and_poll_prediction",
+  description:
+    "Create a new prediction and wait until it's completed. Accepts either a model version (for community models) or a model name (for official models)",
+  inputSchema: {
+    type: "object",
+    properties: {
+      version: {
+        type: "string",
+        description: "Model version ID to use (for community models)",
+      },
+      model: {
+        type: "string",
+        description: "Model name to use (for official models)",
+      },
+      input: {
+        type: "object",
+        description: "Input parameters for the model",
+        additionalProperties: true,
+      },
+      webhook_url: {
+        type: "string",
+        description: "Optional webhook URL for notifications",
+      },
+      poll_interval: {
+        type: "number",
+        description: "Optional interval between polls (default: 1)",
+      },
+      timeout: {
+        type: "number",
+        description: "Optional timeout for prediction (default: 60)",
+      },
+    },
+    oneOf: [
+      { required: ["version", "input"] },
+      { required: ["model", "input"] },
+    ],
+  },
+};
+
+/**
  * Tool for canceling predictions.
  */
 export const cancelPredictionTool: Tool = {
@@ -97,4 +141,4 @@ export const listPredictionsTool: Tool = {
       },
     },
   },
-}; 
+};
