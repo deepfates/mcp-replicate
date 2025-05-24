@@ -1,10 +1,21 @@
 # Replicate MCP Server
+[![smithery badge](https://smithery.ai/badge/mcp-server-replicate)](https://smithery.ai/server/mcp-server-replicate)
 
 A [Model Context Protocol](https://github.com/mcp-sdk/mcp) server implementation for Replicate. Run Replicate models through a simple tool-based interface.
 
 ## Quickstart
 
 1. Install the server:
+
+### Installing via Smithery
+
+To install Replicate for Claude Desktop automatically via [Smithery](https://smithery.ai/server/mcp-server-replicate):
+
+```bash
+npx -y @smithery/cli install mcp-server-replicate --client claude
+```
+
+### Manual Installation
 
 ```bash
 npm install -g mcp-replicate
