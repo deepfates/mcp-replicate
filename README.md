@@ -2,6 +2,10 @@
 
 A [Model Context Protocol](https://github.com/mcp-sdk/mcp) server implementation for Replicate. Run Replicate models through a simple tool-based interface.
 
+## NOT IN ACTIVE DEVELOPMENT
+
+This repo was an experiment in MCP tooling for Replicate. The company now offers an [official MCP server](https://replicate.com/docs/reference/mcp). This repo will stay up for those who find it useful or want to fork it, but it's not in active development and issues won't be addressed. Contributions might be folded in but no promises. Enjoy at your own risk.
+
 ## Quickstart
 
 1. Install the server:
